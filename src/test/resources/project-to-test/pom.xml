@@ -4,20 +4,34 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>dk.kb.util</groupId>
-  <artifactId>injection-maven-plugin</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <groupId>dk.harbojohnston</groupId>
+  <artifactId>yaml-properties-test</artifactId>
+  <version>1</version>
   <packaging>jar</packaging>
-  <name>Test MyMojo</name>
+  <name>Test Yaml Properties Plugin</name>
+  <properties>
+    <filler>test property</filler>
+  </properties>
 
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-my-plugin</artifactId>
-        <configuration>
-          <!-- Specify the MyMojo parameter -->
-          <outputDirectory>target/test-harness/project-to-test</outputDirectory>
-        </configuration>
+        <groupId>dk.harbojohnston</groupId>
+        <artifactId>yaml-properties</artifactId>
+        <version>0.0.1</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>read-yaml-properties</goal>
+            </goals>
+            <configuration>
+              <files>
+                <!-- YAML files that will be loaded. The element name is the file ID. -->
+                <file>yamlStructure.yaml</file>
+              </files>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
