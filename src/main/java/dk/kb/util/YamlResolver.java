@@ -8,12 +8,12 @@ public class YamlResolver {
      */
     String filePath;
     /**
-     * The type of YAML object to fetch from the file. Currently supports: List, Map and Single-value.
+     * The type of YAML object to fetch from the file. Currently, supports: List, Map and Single-value.
      */
     String yamlType;
 
     /**
-     * If yamlType is Sinlgle-value, then this field should contain the YAML path to the value.
+     * If yamlType is Single-value, then this field should contain the YAML path to the value.
      */
     String singleValuePath;
     /**

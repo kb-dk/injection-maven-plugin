@@ -1,27 +1,39 @@
 package dk.kb.util;
 
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
-import org.apache.maven.plugin.testing.MojoRule;
 
 import org.apache.maven.project.MavenProject;
-import org.junit.Rule;
 
 import org.junit.Test;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class InjectionMavenPluginTest extends AbstractMojoTestCase {
-    @Rule
-    public MojoRule rule = new MojoRule();
+    protected void setUp() throws Exception {
+        // required setup for your test
+        super.setUp();
+    }
+
+    protected void tearDown() throws Exception {
+        // cleanup after your test
+        super.tearDown();
+    }
 
     /**
-     * @see junit.framework.TestCase#setUp()
+     * @throws Exception if any
      */
-    protected void setUp() throws Exception
-    {
-        // required for mojo lookups to work
-        super.setUp();
+    @Test
+    public void testSome() throws Exception {
+        File pom = getTestFile( "src/test/resources/project-to-test/pom.xml" );
+        assertNotNull( pom );
+        assertTrue( pom.exists() );
+
+        InjectionMavenPlugin myMojo = (InjectionMavenPlugin) lookupMojo( "read-yaml-properties", pom );
+        assertNotNull( myMojo );
+        myMojo.execute();
+
     }
 
 

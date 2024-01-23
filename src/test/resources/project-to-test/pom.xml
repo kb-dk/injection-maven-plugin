@@ -4,21 +4,35 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>dk.kb.util</groupId>
-  <artifactId>injection-maven-plugin.test</artifactId>
+  <groupId>dk</groupId>
+  <artifactId>test-injection-maven-plugin</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Test Yaml Properties Plugin</name>
+
   <properties>
     <filler>test property</filler>
   </properties>
+
+  <repositories>
+    <repository>
+      <id>sbforge-nexus</id>
+      <url>https://sbforge.org/nexus/content/groups/public</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 
   <build>
     <plugins>
       <plugin>
         <groupId>dk.kb.util</groupId>
         <artifactId>injection-maven-plugin</artifactId>
-        <version>1.0.SNAPSHOT</version>
+        <version>1.0-SNAPSHOT</version>
         <executions>
           <execution>
             <goals>
@@ -29,19 +43,30 @@
                 <YamlResolver>
                   <filePath>yamlStructure.yaml</filePath>
                   <yamlType>List</yamlType>
-                  <keyInList>origin</keyInList>
-                  <collectionName>origins</collectionName>
+                  <key>origin</key>
+                  <collectionPath>origins</collectionPath>
                   <createEnum>true</createEnum>
                 </YamlResolver>
               </yamlResolvers>
-
-              <files>
-                <!-- YAML files that will be loaded. The element name is the file ID. -->
-                <file>yamlStructure.yaml</file>
-              </files>
             </configuration>
           </execution>
         </executions>
+        <configuration>
+          <yamlResolvers>
+            <YamlResolver>
+              <filePath>yamlStructure.yaml</filePath>
+              <yamlType>List</yamlType>
+              <key>origin</key>
+              <collectionPath>origins</collectionPath>
+              <createEnum>true</createEnum>
+            </YamlResolver>
+            <YamlResolver>
+              <filePath>yamlStructure.yaml</filePath>
+              <yamlType>Single</yamlType>
+              <singleValuePath>testvalue.teststring</singleValuePath>
+            </YamlResolver>
+          </yamlResolvers>
+        </configuration>
       </plugin>
     </plugins>
   </build>
