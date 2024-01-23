@@ -35,6 +35,15 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
 
     }
 
+    @Test
+    public void testMojo() throws Exception {
+        File pom = getTestFile( "src/test/resources/project-to-test/pom.xml" );
+        assertNotNull( pom );
+        assertTrue( pom.exists() );
+
+        InjectionMavenPlugin myMojo = (InjectionMavenPlugin) lookupMojo( "read-yaml-properties", pom );
+        myMojo.execute();
+    }
 
     @Test
     public void testEnumFromList() throws Exception {
@@ -53,6 +62,8 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
         // Execute plugin
         yamlMojo.execute();
 
+        // TODO: Make actual test
+
         //assertEquals(193, yamlMojo.project.getProperties().size());
     }
 
@@ -65,4 +76,6 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
         yamlInput.setKey("origin");
         return yamlInput;
     }
+
+
 }
