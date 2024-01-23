@@ -60,6 +60,12 @@
               <collectionPath>testlist</collectionPath>
               <createEnum>true</createEnum>
             </YamlResolver>
+            <YamlResolver>
+              <filePath>yamlStructure.yaml</filePath>
+              <yamlType>Map</yamlType>
+              <collectionPath>simplemap</collectionPath>
+              <createEnum>true</createEnum>
+            </YamlResolver>
           </yamlResolvers>
         </configuration>
       </plugin>
