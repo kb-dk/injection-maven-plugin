@@ -38,32 +38,27 @@
             <goals>
               <goal>read-yaml-properties</goal>
             </goals>
-            <configuration>
-              <yamlResolvers>
-                <YamlResolver>
-                  <filePath>yamlStructure.yaml</filePath>
-                  <yamlType>List</yamlType>
-                  <key>origin</key>
-                  <collectionPath>origins</collectionPath>
-                  <createEnum>true</createEnum>
-                </YamlResolver>
-              </yamlResolvers>
-            </configuration>
           </execution>
         </executions>
         <configuration>
           <yamlResolvers>
             <YamlResolver>
               <filePath>yamlStructure.yaml</filePath>
-              <yamlType>List</yamlType>
-              <key>origin</key>
+              <yamlType>Sequence</yamlType>
               <collectionPath>origins</collectionPath>
+              <key>origin</key>
               <createEnum>true</createEnum>
             </YamlResolver>
             <YamlResolver>
               <filePath>yamlStructure.yaml</filePath>
-              <yamlType>Single</yamlType>
+              <yamlType>Single-value</yamlType>
               <singleValuePath>testvalue.teststring</singleValuePath>
+            </YamlResolver>
+            <YamlResolver>
+              <filePath>yamlStructure.yaml</filePath>
+              <yamlType>List</yamlType>
+              <collectionPath>testlist</collectionPath>
+              <createEnum>true</createEnum>
             </YamlResolver>
           </yamlResolvers>
         </configuration>

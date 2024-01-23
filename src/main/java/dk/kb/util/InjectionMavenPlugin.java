@@ -86,18 +86,21 @@ public class InjectionMavenPlugin extends AbstractMojo{
     }
 
     /**
-     * Extract values from a list or map of values in a YAML file as an enum, that can be used as a maven property.
+     * Extract values from a list, sequence or map of values in a YAML file as an enum, that can be used as a maven property.
      * @param yamlInput a configuration object containing information needed to extract the values from the YAML.
      * @return a string ready to be used as multiple values in an ENUM in OpenAPI.
-     *          All values are concatenated by a comma.
+     *          All values are concatenated by a comma. If a single value path has been given as input, then the single
+     *          value is retrieved.
      */
     private String getYamlValueAsEnumFromFile(YamlResolver yamlInput) {
         getLog().info("Yaml entry is of type: " + yamlInput.yamlType);
 
         try {
             switch (yamlInput.yamlType){
+                case "Sequence":
+                    return constructEnumFromSequence(yamlInput);
                 case "List":
-                    return constructEnumFromList(yamlInput);
+                    return constructEnumFromSimpleList(yamlInput);
                 case "Map":
                     // TODO: Write Map extraction
                     getLog().info("Yaml object is of type map");
@@ -114,28 +117,12 @@ public class InjectionMavenPlugin extends AbstractMojo{
     }
 
     /**
-     * Extract a single value from a given YAML configuration.
-     * @param yamlInput a configuration object containing information needed to extract the values from the YAML.
-     * @return the value from the specified path.
-     */
-    private String getSingleValue(YamlResolver yamlInput) {
-        try {
-            YAML fullYaml = new YAML(yamlInput.filePath);
-            String value = fullYaml.getString(yamlInput.singleValuePath);
-            return value;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
-
-    /**
-     * Create a string from all entries in a YAML List. The strings are concatenated by ', ' and can be used as an
+     * Create a string from all entries in a YAML Sequence. The strings are concatenated by ', ' and can be used as an
      * ENUM value in an OpenAPI specification.
      * @param yamlInput a configuration object containing information needed to extract the values from the YAML.
-     * @return all values from the given list as a comma seperated string.
+     * @return all values from the given sequence as a comma seperated string.
      */
-    private static String constructEnumFromList(YamlResolver yamlInput) {
+    private static String constructEnumFromSequence(YamlResolver yamlInput) {
         try {
             YAML fullYaml = new YAML(yamlInput.filePath);
             StringJoiner stringJoiner = new StringJoiner(", ");
@@ -149,6 +136,41 @@ public class InjectionMavenPlugin extends AbstractMojo{
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * Create a string from all entries in a  simple YAML List. The strings are concatenated by ', ' and
+     * can be used as an ENUM value in an OpenAPI specification.
+     * @param yamlInput a configuration object containing information needed to extract the values from the YAML.
+     * @return all values from the given list as a comma seperated string.
+     */
+    private static String constructEnumFromSimpleList(YamlResolver yamlInput) {
+        try {
+            YAML fullYaml = new YAML(yamlInput.filePath);
+            StringJoiner stringJoiner = new StringJoiner(", ");
+
+            fullYaml.getList(yamlInput.collectionPath)
+                    .forEach(string -> stringJoiner.add((CharSequence) string));
+
+                return stringJoiner.toString();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Extract a single value from a given YAML configuration.
+     * @param yamlInput a configuration object containing information needed to extract the values from the YAML.
+     * @return the value from the specified path.
+     */
+    private String getSingleValue(YamlResolver yamlInput) {
+        try {
+            YAML fullYaml = new YAML(yamlInput.filePath);
+            return fullYaml.getString(yamlInput.singleValuePath);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     // ========================= OLD CODE =============================
     /**
