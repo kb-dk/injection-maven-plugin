@@ -4,6 +4,8 @@
 # If used by another institution the origins should be overwritten by another config sorted alphanumerically
 # later than "ds-present-kb-origins.yaml". Optionally this config file should also be deleted.
 # Views for material harvested from preservica.
+testvalue:
+  teststring: 'This is a test string.'
 pvicaviews: &PRESERVICA_VIEWS
   - raw:
       mime: 'text/plain'
