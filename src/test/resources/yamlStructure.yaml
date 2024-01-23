@@ -10,6 +10,14 @@ testlist:
   - four
   - five
 
+simplemap:
+  first: gorm
+  second: harald
+  third: svend
+  fourth: harald
+  fifth: knud
+  sixth: hardeknud
+
 origins:
   - imageshca:
       description: 'Hans Christian Andersen images from the collections at the Royal Danish Library'

@@ -102,9 +102,7 @@ public class InjectionMavenPlugin extends AbstractMojo{
                 case "List":
                     return constructEnumFromSimpleList(yamlInput);
                 case "Map":
-                    // TODO: Write Map extraction
-                    getLog().info("Yaml object is of type map");
-                    return "";
+                    return constructEnumFromMap(yamlInput);
                 case "Single-value":
                     return getSingleValue(yamlInput);
                 default:
@@ -112,6 +110,26 @@ public class InjectionMavenPlugin extends AbstractMojo{
             }
 
         } catch (MojoFailureException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Create a string from all entries in a YAML map. The strings are concatenated by ', ' and
+     * can be used as an ENUM value in an OpenAPI specification.
+     * @param yamlInput a configuration object containing information needed to extract the values from the YAML.
+     * @return all values from the given map as a comma seperated string.
+     */
+    private static String constructEnumFromMap(YamlResolver yamlInput) {
+        try {
+            YAML fullYaml = new YAML(yamlInput.filePath);
+            StringJoiner stringJoiner = new StringJoiner(", ");
+
+            YAML propertiesMap = fullYaml.getSubMap(yamlInput.collectionPath);
+            propertiesMap.forEach((key, value) -> stringJoiner.add(value.toString()));
+
+            return stringJoiner.toString();
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
