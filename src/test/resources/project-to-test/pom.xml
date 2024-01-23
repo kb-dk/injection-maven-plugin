@@ -4,9 +4,9 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>dk.harbojohnston</groupId>
-  <artifactId>yaml-properties-test</artifactId>
-  <version>1</version>
+  <groupId>dk.kb.util</groupId>
+  <artifactId>injection-maven-plugin.test</artifactId>
+  <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Test Yaml Properties Plugin</name>
   <properties>
@@ -16,15 +16,25 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>dk.harbojohnston</groupId>
-        <artifactId>yaml-properties</artifactId>
-        <version>0.0.1</version>
+        <groupId>dk.kb.util</groupId>
+        <artifactId>injection-maven-plugin</artifactId>
+        <version>1.0.SNAPSHOT</version>
         <executions>
           <execution>
             <goals>
               <goal>read-yaml-properties</goal>
             </goals>
             <configuration>
+              <yamlResolvers>
+                <YamlResolver>
+                  <filePath>yamlStructure.yaml</filePath>
+                  <yamlType>List</yamlType>
+                  <keyInList>origin</keyInList>
+                  <collectionName>origins</collectionName>
+                  <createEnum>true</createEnum>
+                </YamlResolver>
+              </yamlResolvers>
+
               <files>
                 <!-- YAML files that will be loaded. The element name is the file ID. -->
                 <file>yamlStructure.yaml</file>

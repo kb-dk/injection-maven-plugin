@@ -20,8 +20,8 @@ import dk.kb.util.yaml.YAML;
 import dk.kb.util.yaml.YAMLUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 import static dk.kb.util.yaml.YAML.resolveLayeredConfigs;
@@ -43,30 +44,77 @@ public class InjectionMavenPlugin extends AbstractMojo{
 
     /**
      * The YAML files that will be used when reading properties.
-     * To include a YAML file specify the path in a @{code <file></file>} tag.
+     * To include a YAML file specify the path in a @{code <file></file>} tag inside the <files> tag in the POM.
      */
-    @Parameter(property = "files", required = true)
-    public List<String> files;
+    @Parameter(property = "yamlResolvers")
+    public List<YamlResolver> yamlResolvers;
+
+    public void setYamlResolvers(List<YamlResolver> yamlResolvers) {
+        this.yamlResolvers = yamlResolvers;
+    }
+
+    public void setProject(MavenProject project) {
+        this.project = project;
+    }
 
     /**
-     * This MOJO reads properties from @{code files}
+     * This MOJO reads specified properties from specified files.
      */
     public void execute() throws MojoExecutionException {
-        // Retrieve the properties from each YAML file
-        for (String yamlPath : files) {
+        for (YamlResolver yamlResolver : yamlResolvers) {
             try {
-                // Resolve YAML
-                YAML yaml = resolveLayeredConfigs(yamlPath);
-                // Flatten YAML to entries
-                List<Map.Entry<String, Object>> flatYAML = YAMLUtils.flatten(yaml);
-                // Filter YAML entries
-                List<Map.Entry<String, Object>> nonNullYamlEntries = filterEntries(flatYAML);
-                // Add YAML properties to Maven project properties
-                addYamlPropertiesToProjectProperties(nonNullYamlEntries);
-                getLog().info("Updated Maven project properties with properties from: '" + yamlPath);
+                if (yamlResolver.createEnum){
+                    String collectionEnum = getYamlValueAsEnumFromFile(yamlResolver);
+
+                    getLog().info(collectionEnum.toString());
+                } else {
+                    // Resolve YAML
+                    YAML yaml = resolveLayeredConfigs(yamlResolver.filePath);
+                    // Flatten YAML to entries
+                    List<Map.Entry<String, Object>> flatYAML = YAMLUtils.flatten(yaml);
+                    // Filter YAML entries
+                    List<Map.Entry<String, Object>> nonNullYamlEntries = filterEntries(flatYAML);
+                    // Add YAML properties to Maven project properties
+                    addYamlPropertiesToProjectProperties(nonNullYamlEntries);
+                    getLog().info("Updated Maven project properties with " + nonNullYamlEntries.size() +
+                            " properties from: '" + yamlResolver.filePath);
+                }
             } catch (IOException e) {
                 throw new MojoExecutionException("The MOJO could not be executed. YAML input file could probably not be loaded.");
             }
+        }
+    }
+
+    private String getYamlValueAsEnumFromFile(YamlResolver yamlInput) {
+        getLog().info("Yaml entry is of type: " + yamlInput.yamlType);
+
+        try {
+            getLog().info("Working... ");
+            YAML fullYaml = new YAML(yamlInput.filePath);
+
+            switch (yamlInput.yamlType){
+                case "List":
+                    getLog().info("Yaml object is of type list");
+                    StringJoiner stringJoiner = new StringJoiner(", ");
+                    List<YAML> propValues = fullYaml.getYAMLList(yamlInput.collectionPath);
+                    for (YAML originYaml : propValues) {
+                        String enumEntry = originYaml.getString("[0]." + yamlInput.key);
+                        stringJoiner.add(enumEntry);
+                    }
+                    return stringJoiner.toString();
+
+                case "Map":
+                    getLog().info("Yaml object is of type map");
+                    return "";
+                case "Single-value":
+                    getLog().info("Yaml object is a single value");
+                    return "";
+                default:
+                    throw new MojoFailureException("Wrong key has been used when configuring the plugin.");
+            }
+
+        } catch (IOException | MojoFailureException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -96,14 +144,6 @@ public class InjectionMavenPlugin extends AbstractMojo{
 
     private void addEntryToProperties(Map.Entry<String, Object> entry, Properties yamlProperties) {
         yamlProperties.put(entry.getKey(), entry.getValue());
-        getLog().info("Added the property: '" + entry.getKey() + "'.");
     }
 
-    public void setFiles(List<String> files) {
-        this.files = files;
-    }
-
-    public void setProject(MavenProject project) {
-        this.project = project;
-    }
 }
