@@ -17,7 +17,6 @@ package dk.kb.util;
  */
 
 import dk.kb.util.yaml.YAML;
-import dk.kb.util.yaml.YAMLUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 
@@ -28,7 +27,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -36,7 +34,6 @@ import java.util.Properties;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
-import static dk.kb.util.yaml.YAML.resolveLayeredConfigs;
 
 @Mojo(name = "read-yaml-properties", defaultPhase = LifecyclePhase.VALIDATE)
 public class InjectionMavenPlugin extends AbstractMojo{
@@ -63,11 +60,16 @@ public class InjectionMavenPlugin extends AbstractMojo{
      */
     public void execute() throws MojoExecutionException {
         for (YamlResolver yamlResolver : yamlResolvers) {
+            getLog().warn("Current ENUM bool is: " + yamlResolver.createEnum);
+
             if (yamlResolver.createEnum){
                 String collectionEnum = getYamlValueAsEnumFromFile(yamlResolver);
 
-                getLog().info(collectionEnum.toString());
+                getLog().info(collectionEnum);
+                // TODO: SAVE ENUM TO PROPERTIES
             } else {
+                String value =  getSingleValue(yamlResolver);
+                // TODO: CODE THAT SAVES PROPERTY. HAS TO BE REWRITTEN
                 /*// Resolve YAML
                 YAML yaml = resolveLayeredConfigs(yamlResolver.filePath);
                 // Flatten YAML to entries
@@ -78,7 +80,7 @@ public class InjectionMavenPlugin extends AbstractMojo{
                 addYamlPropertiesToProjectProperties(nonNullYamlEntries);
                 getLog().info("Updated Maven project properties with " + nonNullYamlEntries.size() +
                         " properties from: '" + yamlResolver.filePath);*/
-                getLog().info("Not ENUM");
+                getLog().info("Not ENUM, value is: " + value);
             }
         }
     }
@@ -96,13 +98,12 @@ public class InjectionMavenPlugin extends AbstractMojo{
             switch (yamlInput.yamlType){
                 case "List":
                     return constructEnumFromList(yamlInput);
-
                 case "Map":
+                    // TODO: Write Map extraction
                     getLog().info("Yaml object is of type map");
                     return "";
                 case "Single-value":
-                    getLog().info("Yaml object is a single value");
-                    return "";
+                    return getSingleValue(yamlInput);
                 default:
                     throw new MojoFailureException("Wrong key has been used when configuring the plugin.");
             }
@@ -110,6 +111,22 @@ public class InjectionMavenPlugin extends AbstractMojo{
         } catch (MojoFailureException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Extract a single value from a given YAML configuration.
+     * @param yamlInput a configuration object containing information needed to extract the values from the YAML.
+     * @return the value from the specified path.
+     */
+    private String getSingleValue(YamlResolver yamlInput) {
+        try {
+            YAML fullYaml = new YAML(yamlInput.filePath);
+            String value = fullYaml.getString(yamlInput.singleValuePath);
+            return value;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     /**

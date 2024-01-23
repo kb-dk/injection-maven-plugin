@@ -30,10 +30,6 @@ public class YamlResolver {
     @Parameter(defaultValue = "false")
     boolean createEnum;
 
-    public boolean isCreateEnum() {
-        return createEnum;
-    }
-
     public void setCreateEnum(boolean createEnum) {
         this.createEnum = createEnum;
     }
