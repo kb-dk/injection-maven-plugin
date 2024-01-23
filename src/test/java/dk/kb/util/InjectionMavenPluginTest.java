@@ -25,14 +25,13 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
      * @throws Exception if any
      */
     @Test
-    public void testSome() throws Exception {
+    public void testParameterInjection() throws Exception {
         File pom = getTestFile( "src/test/resources/project-to-test/pom.xml" );
         assertNotNull( pom );
         assertTrue( pom.exists() );
 
         InjectionMavenPlugin myMojo = (InjectionMavenPlugin) lookupMojo( "read-yaml-properties", pom );
-        assertNotNull( myMojo );
-        myMojo.execute();
+        assertEquals("List",  myMojo.yamlResolvers.get(0).yamlType );
 
     }
 
@@ -50,8 +49,6 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
         MavenProject project = new MavenProject();
         yamlMojo.setProject(project);
         yamlMojo.setYamlResolvers(yamlResolverList);
-
-
 
         // Execute plugin
         yamlMojo.execute();
