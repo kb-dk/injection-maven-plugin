@@ -225,7 +225,7 @@ public class InjectionMavenPlugin extends AbstractMojo{
         Properties extractedProperties = new Properties();
         extractedProperties.put(propertyName, propertyValue);
         project.getProperties().putAll(extractedProperties);
-        getLog().info("Added the property: '" + propertyName + "' with the value: '" + propertyValue +
+        getLog().debug("Added the property: '" + propertyName + "' with the value: '" + propertyValue +
                 "' to maven properties."  );
     }
 }
