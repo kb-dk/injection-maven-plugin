@@ -28,8 +28,6 @@ import org.apache.maven.project.MavenProject;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Properties;
 import java.util.StringJoiner;
 
@@ -62,12 +60,12 @@ public class InjectionMavenPlugin extends AbstractMojo{
             String propertyName;
 
             if (yamlResolver.createEnum){
-                propertyName = yamlResolver.collectionPath;
+                propertyName = yamlResolver.yamlPath;
                 String collectionEnum = getYamlValueAsEnumFromFile(yamlResolver);
 
                 addYamlPropertiesToProjectProperties(propertyName, collectionEnum);
             } else {
-                propertyName = yamlResolver.singleValuePath;
+                propertyName = yamlResolver.yamlPath;
                 String value =  getSingleValue(yamlResolver);
 
                 addYamlPropertiesToProjectProperties(propertyName, value);
@@ -113,7 +111,7 @@ public class InjectionMavenPlugin extends AbstractMojo{
             YAML fullYaml = new YAML(yamlInput.filePath);
             StringJoiner stringJoiner = new StringJoiner(", ");
 
-            YAML propertiesMap = fullYaml.getSubMap(yamlInput.collectionPath);
+            YAML propertiesMap = fullYaml.getSubMap(yamlInput.yamlPath);
             propertiesMap.forEach((key, value) -> stringJoiner.add(value.toString()));
 
             return stringJoiner.toString();
@@ -132,7 +130,7 @@ public class InjectionMavenPlugin extends AbstractMojo{
         try {
             YAML fullYaml = new YAML(yamlInput.filePath);
             StringJoiner stringJoiner = new StringJoiner(", ");
-            List<YAML> propValues = fullYaml.getYAMLList(yamlInput.collectionPath);
+            List<YAML> propValues = fullYaml.getYAMLList(yamlInput.yamlPath);
             for (YAML originYaml : propValues) {
                 String enumEntry = originYaml.getString("[0]." + yamlInput.key);
                 stringJoiner.add(enumEntry);
@@ -169,7 +167,7 @@ public class InjectionMavenPlugin extends AbstractMojo{
             YAML fullYaml = new YAML(yamlInput.filePath);
             StringJoiner stringJoiner = new StringJoiner(", ");
 
-            fullYaml.getList(yamlInput.collectionPath)
+            fullYaml.getList(yamlInput.yamlPath)
                     .forEach(string -> stringJoiner.add((CharSequence) string));
 
                 return stringJoiner.toString();
@@ -189,10 +187,10 @@ public class InjectionMavenPlugin extends AbstractMojo{
             YAML fullYaml = new YAML(yamlInput.filePath);
             StringJoiner stringJoiner = new StringJoiner(", ");
 
-            int sizeOfList = fullYaml.getList(yamlInput.collectionPath).size();
+            int sizeOfList = fullYaml.getList(yamlInput.yamlPath).size();
             for (int i = 0; i < sizeOfList; i++) {
                 String listIterator = "["+i+"]";
-                String result = (String) fullYaml.get(yamlInput.collectionPath + listIterator + "." + yamlInput.key);
+                String result = (String) fullYaml.get(yamlInput.yamlPath + listIterator + "." + yamlInput.key);
                 stringJoiner.add(result);
             }
 
@@ -210,7 +208,7 @@ public class InjectionMavenPlugin extends AbstractMojo{
     private String getSingleValue(YamlResolver yamlInput) {
         try {
             YAML fullYaml = new YAML(yamlInput.filePath);
-            return fullYaml.getString(yamlInput.singleValuePath);
+            return fullYaml.getString(yamlInput.yamlPath);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
