@@ -14,14 +14,9 @@ public class YamlResolver {
     String yamlType;
 
     /**
-     * If yamlType is Single-value, then this field should contain the YAML path to the value.
+     * This field should contain the YAML path to the given entry, which we want to extract from the YAML.
      */
-    String singleValuePath;
-
-    /**
-     * If yamlType is either List, Sequence Map, this field should contain the YAML path to the given list or map.
-     */
-    String collectionPath;
+    String yamlPath;
 
     /**
      * If yamlType is Map or List, then this field should contain the key or entry-number to look for in the given map.
@@ -37,14 +32,6 @@ public class YamlResolver {
 
     public void setCreateEnum(boolean createEnum) {
         this.createEnum = createEnum;
-    }
-
-    public String getCollectionPath() {
-        return collectionPath;
-    }
-
-    public void setCollectionPath(String collectionPath) {
-        this.collectionPath = collectionPath;
     }
 
     public String getFilePath() {
@@ -63,12 +50,12 @@ public class YamlResolver {
         this.yamlType = yamlType;
     }
 
-    public String getSingleValuePath() {
-        return singleValuePath;
+    public String getYamlPath() {
+        return yamlPath;
     }
 
-    public void setSingleValuePath(String singleValuePath) {
-        this.singleValuePath = singleValuePath;
+    public void setYamlPath(String yamlPath) {
+        this.yamlPath = yamlPath;
     }
 
     public String getKey() {

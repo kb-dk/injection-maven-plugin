@@ -107,7 +107,7 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
     private YamlResolver createTestSequence(){
         YamlResolver yamlInput = new YamlResolver();
         yamlInput.setFilePath("yamlStructure.yaml");
-        yamlInput.setCollectionPath("origins");
+        yamlInput.setYamlPath("origins");
         yamlInput.setYamlType("Sequence");
         yamlInput.setCreateEnum(true);
         yamlInput.setKey("origin");
@@ -116,7 +116,7 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
     private YamlResolver createTestList(){
         YamlResolver yamlInput = new YamlResolver();
         yamlInput.setFilePath("yamlStructure.yaml");
-        yamlInput.setCollectionPath("testlist");
+        yamlInput.setYamlPath("testlist");
         yamlInput.setYamlType("List");
         yamlInput.setCreateEnum(true);
         return yamlInput;
@@ -124,7 +124,7 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
     private YamlResolver createTestSinglevalue(){
         YamlResolver yamlInput = new YamlResolver();
         yamlInput.setFilePath("yamlStructure.yaml");
-        yamlInput.setSingleValuePath("testvalue.teststring");
+        yamlInput.setYamlPath("testvalue.teststring");
         yamlInput.setYamlType("Single-value");
         return yamlInput;
     }
@@ -132,7 +132,7 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
     private YamlResolver createTestMap(){
         YamlResolver yamlInput = new YamlResolver();
         yamlInput.setFilePath("yamlStructure.yaml");
-        yamlInput.setCollectionPath("simplemap");
+        yamlInput.setYamlPath("simplemap");
         yamlInput.setYamlType("Map");
         yamlInput.setCreateEnum(true);
         return yamlInput;
@@ -140,7 +140,7 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
     private YamlResolver createComplexTestList(){
         YamlResolver yamlInput = new YamlResolver();
         yamlInput.setFilePath("yamlStructure.yaml");
-        yamlInput.setCollectionPath("allowed_origins");
+        yamlInput.setYamlPath("allowed_origins");
         yamlInput.setYamlType("List");
         yamlInput.setKey("name");
         yamlInput.setCreateEnum(true);
