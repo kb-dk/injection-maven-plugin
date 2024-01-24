@@ -28,6 +28,8 @@ import org.apache.maven.project.MavenProject;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.StringJoiner;
 
@@ -86,7 +88,7 @@ public class InjectionMavenPlugin extends AbstractMojo{
                 case "Sequence":
                     return constructEnumFromSequence(yamlInput);
                 case "List":
-                    return constructEnumFromSimpleList(yamlInput);
+                    return constructEnumFromLists(yamlInput);
                 case "Map":
                     return constructEnumFromMap(yamlInput);
                 case "Single-value":
@@ -142,6 +144,21 @@ public class InjectionMavenPlugin extends AbstractMojo{
     }
 
     /**
+     * Create a string from all entries in a YAML List. The strings are concatenated by ', ' and
+     * can be used as an ENUM value in an OpenAPI specification. It is possible to extract subelements from complex
+     * list by defining a key value in the plugin configuration.
+     * @param yamlInput a configuration object containing information needed to extract the values from the YAML.
+     * @return all values from the given list as a comma seperated string.
+     */
+    private static String constructEnumFromLists(YamlResolver yamlInput){
+        if (yamlInput.key == null || yamlInput.key.isEmpty()){
+            return constructEnumFromSimpleList(yamlInput);
+        } else {
+            return constructEnumFromObjectsInList(yamlInput);
+        }
+    }
+
+    /**
      * Create a string from all entries in a  simple YAML List. The strings are concatenated by ', ' and
      * can be used as an ENUM value in an OpenAPI specification.
      * @param yamlInput a configuration object containing information needed to extract the values from the YAML.
@@ -156,6 +173,30 @@ public class InjectionMavenPlugin extends AbstractMojo{
                     .forEach(string -> stringJoiner.add((CharSequence) string));
 
                 return stringJoiner.toString();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Create a string from all entries in a complex YAML List. The strings are concatenated by ', ' and
+     * can be used as an ENUM value in an OpenAPI specification.
+     * @param yamlInput a configuration object containing information needed to extract the values from the YAML.
+     * @return all values from the given list as a comma seperated string.
+     */
+    private static String constructEnumFromObjectsInList(YamlResolver yamlInput){
+        try {
+            YAML fullYaml = new YAML(yamlInput.filePath);
+            StringJoiner stringJoiner = new StringJoiner(", ");
+
+            int sizeOfList = fullYaml.getList(yamlInput.collectionPath).size();
+            for (int i = 0; i < sizeOfList; i++) {
+                String listIterator = "["+i+"]";
+                String result = (String) fullYaml.get(yamlInput.collectionPath + listIterator + "." + yamlInput.key);
+                stringJoiner.add(result);
+            }
+
+            return stringJoiner.toString();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
