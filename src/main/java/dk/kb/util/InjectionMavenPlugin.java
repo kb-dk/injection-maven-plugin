@@ -57,16 +57,15 @@ public class InjectionMavenPlugin extends AbstractMojo{
      */
     public void execute() throws MojoExecutionException {
         for (YamlResolver yamlResolver : yamlResolvers) {
-            getLog().warn("Current ENUM bool is: " + yamlResolver.createEnum);
-            String propertyName = "test";
+            String propertyName;
 
             if (yamlResolver.createEnum){
+                propertyName = yamlResolver.collectionPath;
                 String collectionEnum = getYamlValueAsEnumFromFile(yamlResolver);
 
-                getLog().info(propertyName);
-                getLog().info(collectionEnum);
                 addYamlPropertiesToProjectProperties(propertyName, collectionEnum);
             } else {
+                propertyName = yamlResolver.singleValuePath;
                 String value =  getSingleValue(yamlResolver);
 
                 addYamlPropertiesToProjectProperties(propertyName, value);
@@ -82,8 +81,6 @@ public class InjectionMavenPlugin extends AbstractMojo{
      *          value is retrieved.
      */
     private String getYamlValueAsEnumFromFile(YamlResolver yamlInput) {
-        getLog().info("Yaml entry is of type: " + yamlInput.yamlType);
-
         try {
             switch (yamlInput.yamlType){
                 case "Sequence":
