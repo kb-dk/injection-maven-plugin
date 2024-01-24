@@ -28,11 +28,8 @@ import org.apache.maven.project.MavenProject;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Properties;
 import java.util.StringJoiner;
-import java.util.stream.Collectors;
 
 
 @Mojo(name = "read-yaml-properties", defaultPhase = LifecyclePhase.VALIDATE)
@@ -61,26 +58,18 @@ public class InjectionMavenPlugin extends AbstractMojo{
     public void execute() throws MojoExecutionException {
         for (YamlResolver yamlResolver : yamlResolvers) {
             getLog().warn("Current ENUM bool is: " + yamlResolver.createEnum);
+            String propertyName = "test";
 
             if (yamlResolver.createEnum){
                 String collectionEnum = getYamlValueAsEnumFromFile(yamlResolver);
 
+                getLog().info(propertyName);
                 getLog().info(collectionEnum);
-                // TODO: SAVE ENUM TO PROPERTIES
+                addYamlPropertiesToProjectProperties(propertyName, collectionEnum);
             } else {
                 String value =  getSingleValue(yamlResolver);
-                // TODO: CODE THAT SAVES PROPERTY. HAS TO BE REWRITTEN
-                /*// Resolve YAML
-                YAML yaml = resolveLayeredConfigs(yamlResolver.filePath);
-                // Flatten YAML to entries
-                List<Map.Entry<String, Object>> flatYAML = YAMLUtils.flatten(yaml);
-                // Filter YAML entries
-                List<Map.Entry<String, Object>> nonNullYamlEntries = filterEntries(flatYAML);
-                // Add YAML properties to Maven project properties
-                addYamlPropertiesToProjectProperties(nonNullYamlEntries);
-                getLog().info("Updated Maven project properties with " + nonNullYamlEntries.size() +
-                        " properties from: '" + yamlResolver.filePath);*/
-                getLog().info("Not ENUM, value is: " + value);
+
+                addYamlPropertiesToProjectProperties(propertyName, value);
             }
         }
     }
@@ -189,34 +178,16 @@ public class InjectionMavenPlugin extends AbstractMojo{
         }
     }
 
-
-    // ========================= OLD CODE =============================
     /**
-     * Filters a list of parameters from a flattened YAML file.
-     * @param flatYAML entries from a YAML file that have already been flattened.
-     * @return a list of key/value pairs containing properties that are not null or
-     * 			doesn't have keys or values equal null.
+     * Add properties extracted from YAML to maven properties.
+     * @param propertyName the name of the property.
+     * @param propertyValue the value created through this plugin.
      */
-    private static List<Map.Entry<String, Object>> filterEntries(List<Map.Entry<String, Object>> flatYAML) {
-        return flatYAML.stream()
-                .filter(Objects::nonNull)
-                .filter(entry -> entry.getValue() != null)
-                .filter(entry -> entry.getKey() != null)
-                .collect(Collectors.toList());
+    private void addYamlPropertiesToProjectProperties(String propertyName, String propertyValue) {
+        Properties extractedProperties = new Properties();
+        extractedProperties.put(propertyName, propertyValue);
+        project.getProperties().putAll(extractedProperties);
+        getLog().info("Added the property: '" + propertyName + "' with the value: '" + propertyValue +
+                "' to maven properties."  );
     }
-
-    /**
-     * Add the entries from the input list to the Maven project properties.
-     * @param nonNullYamlEntries a list of properties which are to be added to maven properties.
-     */
-    private void addYamlPropertiesToProjectProperties(List<Map.Entry<String, Object>> nonNullYamlEntries) {
-        Properties yamlProperties = new Properties();
-        nonNullYamlEntries.forEach(entry -> addEntryToProperties(entry, yamlProperties));
-        project.getProperties().putAll(yamlProperties);
-    }
-
-    private void addEntryToProperties(Map.Entry<String, Object> entry, Properties yamlProperties) {
-        yamlProperties.put(entry.getKey(), entry.getValue());
-    }
-
 }
