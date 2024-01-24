@@ -31,7 +31,7 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
         assertTrue( pom.exists() );
 
         InjectionMavenPlugin myMojo = (InjectionMavenPlugin) lookupMojo( "read-yaml-properties", pom );
-        assertEquals("List",  myMojo.yamlResolvers.get(0).yamlType );
+        assertEquals("Sequence",  myMojo.yamlResolvers.get(0).yamlType );
 
     }
 
@@ -42,11 +42,12 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
         assertTrue( pom.exists() );
 
         InjectionMavenPlugin myMojo = (InjectionMavenPlugin) lookupMojo( "read-yaml-properties", pom );
+
         myMojo.execute();
     }
 
     @Test
-    public void testEnumFromList() throws Exception {
+    public void testEnumFromSequence() throws Exception {
         List<YamlResolver> yamlResolverList = new ArrayList<>();
         YamlResolver yamlInput = createTestYamlInput();
         yamlResolverList.add(yamlInput);
@@ -71,7 +72,7 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
         YamlResolver yamlInput = new YamlResolver();
         yamlInput.setFilePath("yamlStructure.yaml");
         yamlInput.setCollectionPath("origins");
-        yamlInput.setYamlType("List");
+        yamlInput.setYamlType("Sequence");
         yamlInput.setCreateEnum(true);
         yamlInput.setKey("origin");
         return yamlInput;

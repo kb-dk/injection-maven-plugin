@@ -41,6 +41,7 @@
           </execution>
         </executions>
         <configuration>
+          <project implementation="org.apache.maven.plugin.testing.stubs.MavenProjectStub"/>
           <yamlResolvers>
             <YamlResolver>
               <filePath>yamlStructure.yaml</filePath>
