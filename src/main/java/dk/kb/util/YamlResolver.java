@@ -26,6 +26,7 @@ public class YamlResolver {
     /**
      * If yamlType is Map or List, then this field should contain the key or entry-number to look for in the given map.
      */
+    @Parameter(defaultValue = "")
     String key;
 
     /**

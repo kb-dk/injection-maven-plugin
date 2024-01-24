@@ -67,6 +67,13 @@
               <collectionPath>simplemap</collectionPath>
               <createEnum>true</createEnum>
             </YamlResolver>
+            <YamlResolver>
+              <filePath>yamlStructure.yaml</filePath>
+              <yamlType>List</yamlType>
+              <collectionPath>allowed_origins</collectionPath>
+              <key>name</key>
+              <createEnum>true</createEnum>
+            </YamlResolver>
           </yamlResolvers>
         </configuration>
       </plugin>
