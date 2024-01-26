@@ -28,7 +28,6 @@ import org.apache.maven.project.MavenProject;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Properties;
 import java.util.StringJoiner;
 
 
@@ -92,7 +91,8 @@ public class InjectionMavenPlugin extends AbstractMojo{
                 case "Single-value":
                     return getSingleValue(yamlInput);
                 default:
-                    throw new MojoFailureException("Wrong key has been used when configuring the plugin.");
+                    throw new MojoFailureException("Wrong key: '" + yamlInput.yamlType + "' has been used when configuring the plugin. " +
+                            "Valid keys are: 'Sequence', 'List', 'Map' and 'Single-value'.");
             }
 
         } catch (MojoFailureException e) {
@@ -104,11 +104,11 @@ public class InjectionMavenPlugin extends AbstractMojo{
      * Create a string from all entries in a YAML map. The strings are concatenated by ', ' and
      * can be used as an ENUM value in an OpenAPI specification.
      * @param yamlInput a configuration object containing information needed to extract the values from the YAML.
-     * @return all values from the given map as a comma seperated string.
+     * @return all values from the given map as a comma separated string.
      */
     private static String constructEnumFromMap(YamlResolver yamlInput) {
         try {
-            YAML fullYaml = new YAML(yamlInput.filePath);
+            YAML fullYaml = YAML.resolveLayeredConfigs(yamlInput.filePath);
             StringJoiner stringJoiner = new StringJoiner(", ");
 
             YAML propertiesMap = fullYaml.getSubMap(yamlInput.yamlPath);
@@ -124,11 +124,11 @@ public class InjectionMavenPlugin extends AbstractMojo{
      * Create a string from all entries in a YAML Sequence. The strings are concatenated by ', ' and can be used as an
      * ENUM value in an OpenAPI specification.
      * @param yamlInput a configuration object containing information needed to extract the values from the YAML.
-     * @return all values from the given sequence as a comma seperated string.
+     * @return all values from the given sequence as a comma separated string.
      */
     private static String constructEnumFromSequence(YamlResolver yamlInput) {
         try {
-            YAML fullYaml = new YAML(yamlInput.filePath);
+            YAML fullYaml = YAML.resolveLayeredConfigs(yamlInput.filePath);
             StringJoiner stringJoiner = new StringJoiner(", ");
             List<YAML> propValues = fullYaml.getYAMLList(yamlInput.yamlPath);
             for (YAML originYaml : propValues) {
@@ -146,7 +146,7 @@ public class InjectionMavenPlugin extends AbstractMojo{
      * can be used as an ENUM value in an OpenAPI specification. It is possible to extract subelements from complex
      * list by defining a key value in the plugin configuration.
      * @param yamlInput a configuration object containing information needed to extract the values from the YAML.
-     * @return all values from the given list as a comma seperated string.
+     * @return all values from the given list as a comma separated string.
      */
     private static String constructEnumFromLists(YamlResolver yamlInput){
         if (yamlInput.key == null || yamlInput.key.isEmpty()){
@@ -160,11 +160,11 @@ public class InjectionMavenPlugin extends AbstractMojo{
      * Create a string from all entries in a  simple YAML List. The strings are concatenated by ', ' and
      * can be used as an ENUM value in an OpenAPI specification.
      * @param yamlInput a configuration object containing information needed to extract the values from the YAML.
-     * @return all values from the given list as a comma seperated string.
+     * @return all values from the given list as a comma separated string.
      */
     private static String constructEnumFromSimpleList(YamlResolver yamlInput) {
         try {
-            YAML fullYaml = new YAML(yamlInput.filePath);
+            YAML fullYaml = YAML.resolveLayeredConfigs(yamlInput.filePath);
             StringJoiner stringJoiner = new StringJoiner(", ");
 
             fullYaml.getList(yamlInput.yamlPath)
@@ -180,11 +180,11 @@ public class InjectionMavenPlugin extends AbstractMojo{
      * Create a string from all entries in a complex YAML List. The strings are concatenated by ', ' and
      * can be used as an ENUM value in an OpenAPI specification.
      * @param yamlInput a configuration object containing information needed to extract the values from the YAML.
-     * @return all values from the given list as a comma seperated string.
+     * @return all values from the given list as a comma separated string.
      */
     private static String constructEnumFromObjectsInList(YamlResolver yamlInput){
         try {
-            YAML fullYaml = new YAML(yamlInput.filePath);
+            YAML fullYaml = YAML.resolveLayeredConfigs(yamlInput.filePath);
             StringJoiner stringJoiner = new StringJoiner(", ");
 
             int sizeOfList = fullYaml.getList(yamlInput.yamlPath).size();
@@ -207,7 +207,7 @@ public class InjectionMavenPlugin extends AbstractMojo{
      */
     private String getSingleValue(YamlResolver yamlInput) {
         try {
-            YAML fullYaml = new YAML(yamlInput.filePath);
+            YAML fullYaml = YAML.resolveLayeredConfigs(yamlInput.filePath);
             return fullYaml.getString(yamlInput.yamlPath);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -220,9 +220,7 @@ public class InjectionMavenPlugin extends AbstractMojo{
      * @param propertyValue the value created through this plugin.
      */
     private void addYamlPropertiesToProjectProperties(String propertyName, String propertyValue) {
-        Properties extractedProperties = new Properties();
-        extractedProperties.put(propertyName, propertyValue);
-        project.getProperties().putAll(extractedProperties);
+        project.getProperties().put(propertyName, propertyValue);
         getLog().debug("Added the property: '" + propertyName + "' with the value: '" + propertyValue +
                 "' to maven properties."  );
     }
