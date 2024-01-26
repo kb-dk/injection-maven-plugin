@@ -98,6 +98,7 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
 
         // Set test values
         MavenProject project = new MavenProject();
+        yamlMojo.setFilePath("yamlStructure.yaml");
         yamlMojo.setProject(project);
         yamlMojo.setYamlResolvers(yamlResolverList);
 
@@ -106,7 +107,7 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
 
     private YamlResolver createTestSequence(){
         YamlResolver yamlInput = new YamlResolver();
-        yamlInput.setFilePath("yamlStructure.yaml");
+        //yamlInput.setFilePath("yamlStructure.yaml");
         yamlInput.setYamlPath("origins");
         yamlInput.setYamlType("Sequence");
         yamlInput.setCreateEnum(true);
@@ -115,7 +116,7 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
     }
     private YamlResolver createTestList(){
         YamlResolver yamlInput = new YamlResolver();
-        yamlInput.setFilePath("yamlStructure.yaml");
+        //yamlInput.setFilePath("yamlStructure.yaml");
         yamlInput.setYamlPath("testlist");
         yamlInput.setYamlType("List");
         yamlInput.setCreateEnum(true);
@@ -123,7 +124,7 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
     }
     private YamlResolver createTestSinglevalue(){
         YamlResolver yamlInput = new YamlResolver();
-        yamlInput.setFilePath("yamlStructure.yaml");
+        //yamlInput.setFilePath("yamlStructure.yaml");
         yamlInput.setYamlPath("testvalue.teststring");
         yamlInput.setYamlType("Single-value");
         return yamlInput;
@@ -131,7 +132,7 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
 
     private YamlResolver createTestMap(){
         YamlResolver yamlInput = new YamlResolver();
-        yamlInput.setFilePath("yamlStructure.yaml");
+        //yamlInput.setFilePath("yamlStructure.yaml");
         yamlInput.setYamlPath("simplemap");
         yamlInput.setYamlType("Map");
         yamlInput.setCreateEnum(true);
@@ -139,7 +140,7 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
     }
     private YamlResolver createComplexTestList(){
         YamlResolver yamlInput = new YamlResolver();
-        yamlInput.setFilePath("yamlStructure.yaml");
+        //yamlInput.setFilePath("yamlStructure.yaml");
         yamlInput.setYamlPath("allowed_origins");
         yamlInput.setYamlType("List");
         yamlInput.setKey("name");
