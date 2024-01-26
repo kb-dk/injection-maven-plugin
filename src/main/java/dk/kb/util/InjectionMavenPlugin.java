@@ -37,6 +37,14 @@ public class InjectionMavenPlugin extends AbstractMojo{
     public MavenProject project;
 
     /**
+     * The path to the input YAML files. Wildcards can be used here. Specifying a path as e.g. myproject-*.yaml will
+     * resolve to multiple files, which are then merged by the underlying YAML-implementation. This is useful, when
+     * different environments specify different values for the same property.
+     */
+    @Parameter(property = "filePath")
+    public String filePath;
+
+    /**
      * The YAML files that will be used when reading properties.
      * To include a YAML file specify the path in a @{code <file></file>} tag inside the <files> tag in the POM.
      */
@@ -49,6 +57,10 @@ public class InjectionMavenPlugin extends AbstractMojo{
 
     public void setProject(MavenProject project) {
         this.project = project;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
     /**
@@ -106,9 +118,9 @@ public class InjectionMavenPlugin extends AbstractMojo{
      * @param yamlInput a configuration object containing information needed to extract the values from the YAML.
      * @return all values from the given map as a comma separated string.
      */
-    private static String constructEnumFromMap(YamlResolver yamlInput) {
+    private String constructEnumFromMap(YamlResolver yamlInput) {
         try {
-            YAML fullYaml = YAML.resolveLayeredConfigs(yamlInput.filePath);
+            YAML fullYaml = YAML.resolveLayeredConfigs(filePath);
             StringJoiner stringJoiner = new StringJoiner(", ");
 
             YAML propertiesMap = fullYaml.getSubMap(yamlInput.yamlPath);
@@ -126,9 +138,9 @@ public class InjectionMavenPlugin extends AbstractMojo{
      * @param yamlInput a configuration object containing information needed to extract the values from the YAML.
      * @return all values from the given sequence as a comma separated string.
      */
-    private static String constructEnumFromSequence(YamlResolver yamlInput) {
+    private String constructEnumFromSequence(YamlResolver yamlInput) {
         try {
-            YAML fullYaml = YAML.resolveLayeredConfigs(yamlInput.filePath);
+            YAML fullYaml = YAML.resolveLayeredConfigs(filePath);
             StringJoiner stringJoiner = new StringJoiner(", ");
             List<YAML> propValues = fullYaml.getYAMLList(yamlInput.yamlPath);
             for (YAML originYaml : propValues) {
@@ -148,7 +160,7 @@ public class InjectionMavenPlugin extends AbstractMojo{
      * @param yamlInput a configuration object containing information needed to extract the values from the YAML.
      * @return all values from the given list as a comma separated string.
      */
-    private static String constructEnumFromLists(YamlResolver yamlInput){
+    private String constructEnumFromLists(YamlResolver yamlInput){
         if (yamlInput.key == null || yamlInput.key.isEmpty()){
             return constructEnumFromSimpleList(yamlInput);
         } else {
@@ -162,9 +174,9 @@ public class InjectionMavenPlugin extends AbstractMojo{
      * @param yamlInput a configuration object containing information needed to extract the values from the YAML.
      * @return all values from the given list as a comma separated string.
      */
-    private static String constructEnumFromSimpleList(YamlResolver yamlInput) {
+    private String constructEnumFromSimpleList(YamlResolver yamlInput) {
         try {
-            YAML fullYaml = YAML.resolveLayeredConfigs(yamlInput.filePath);
+            YAML fullYaml = YAML.resolveLayeredConfigs(filePath);
             StringJoiner stringJoiner = new StringJoiner(", ");
 
             fullYaml.getList(yamlInput.yamlPath)
@@ -182,9 +194,9 @@ public class InjectionMavenPlugin extends AbstractMojo{
      * @param yamlInput a configuration object containing information needed to extract the values from the YAML.
      * @return all values from the given list as a comma separated string.
      */
-    private static String constructEnumFromObjectsInList(YamlResolver yamlInput){
+    private String constructEnumFromObjectsInList(YamlResolver yamlInput){
         try {
-            YAML fullYaml = YAML.resolveLayeredConfigs(yamlInput.filePath);
+            YAML fullYaml = YAML.resolveLayeredConfigs(filePath);
             StringJoiner stringJoiner = new StringJoiner(", ");
 
             int sizeOfList = fullYaml.getList(yamlInput.yamlPath).size();
@@ -207,7 +219,7 @@ public class InjectionMavenPlugin extends AbstractMojo{
      */
     private String getSingleValue(YamlResolver yamlInput) {
         try {
-            YAML fullYaml = YAML.resolveLayeredConfigs(yamlInput.filePath);
+            YAML fullYaml = YAML.resolveLayeredConfigs(filePath);
             return fullYaml.getString(yamlInput.yamlPath);
         } catch (IOException e) {
             throw new RuntimeException(e);

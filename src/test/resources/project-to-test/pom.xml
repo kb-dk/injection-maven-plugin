@@ -42,33 +42,29 @@
         </executions>
         <configuration>
           <project implementation="org.apache.maven.plugin.testing.stubs.MavenProjectStub"/>
+          <filePath>yamlStructure.yaml</filePath>
           <yamlResolvers>
             <YamlResolver>
-              <filePath>yamlStructure.yaml</filePath>
               <yamlType>Sequence</yamlType>
               <yamlPath>origins</yamlPath>
               <key>origin</key>
               <createEnum>true</createEnum>
             </YamlResolver>
             <YamlResolver>
-              <filePath>yamlStructure.yaml</filePath>
               <yamlType>Single-value</yamlType>
               <yamlPath>testvalue.teststring</yamlPath>
             </YamlResolver>
             <YamlResolver>
-              <filePath>yamlStructure.yaml</filePath>
               <yamlType>List</yamlType>
               <yamlPath>testlist</yamlPath>
               <createEnum>true</createEnum>
             </YamlResolver>
             <YamlResolver>
-              <filePath>yamlStructure.yaml</filePath>
               <yamlType>Map</yamlType>
               <yamlPath>simplemap</yamlPath>
               <createEnum>true</createEnum>
             </YamlResolver>
             <YamlResolver>
-              <filePath>yamlStructure.yaml</filePath>
               <yamlType>List</yamlType>
               <yamlPath>allowed_origins</yamlPath>
               <key>name</key>
