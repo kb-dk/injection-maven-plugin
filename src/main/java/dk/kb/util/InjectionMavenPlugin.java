@@ -69,18 +69,17 @@ public class InjectionMavenPlugin extends AbstractMojo{
     public void execute() throws MojoExecutionException {
         for (YamlResolver yamlResolver : yamlResolvers) {
             String propertyName;
+            String value;
 
             if (yamlResolver.createEnum){
                 propertyName = yamlResolver.yamlPath;
-                String collectionEnum = getYamlValueAsEnumFromFile(yamlResolver);
-
-                addYamlPropertiesToProjectProperties(propertyName, collectionEnum);
+                value = getYamlValueAsEnumFromFile(yamlResolver);
             } else {
                 propertyName = yamlResolver.yamlPath;
-                String value =  getSingleValue(yamlResolver);
-
-                addYamlPropertiesToProjectProperties(propertyName, value);
+                value =  getSingleValue(yamlResolver);
             }
+
+            addYamlPropertiesToProjectProperties(propertyName, value);
         }
     }
 
