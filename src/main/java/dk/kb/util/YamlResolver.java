@@ -27,7 +27,14 @@ public class YamlResolver {
      * If yamlType is Map or List, then this field should contain the key or entry-number to look for in the given map.
      */
     @Parameter(defaultValue = "")
-    String key;
+    String sourceKey;
+
+    /**
+     * The plugin requires a destination key for yeah resolver. This key determines the key for the property, when
+     * extracted to maven properties. This is the key, which should be looked up by the project using this plugin.
+     */
+    @Parameter(required = true)
+    String destinationKey;
 
     /**
      * If an enum is to be created for the given values, set this to true.
@@ -60,12 +67,19 @@ public class YamlResolver {
         this.yamlPath = yamlPath;
     }
 
-    public String getKey() {
-        return key;
+    public String getSourceKey() {
+        return sourceKey;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setSourceKey(String sourceKey) {
+        this.sourceKey = sourceKey;
     }
 
+    public String getDestinationKey() {
+        return destinationKey;
+    }
+
+    public void setDestinationKey(String destinationKey) {
+        this.destinationKey = destinationKey;
+    }
 }
