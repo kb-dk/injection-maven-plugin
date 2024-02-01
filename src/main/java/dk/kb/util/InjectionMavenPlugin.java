@@ -72,14 +72,12 @@ public class InjectionMavenPlugin extends AbstractMojo{
             String value;
 
             if (yamlResolver.createEnum){
-                propertyName = yamlResolver.yamlPath;
                 value = getYamlValueAsEnumFromFile(yamlResolver);
             } else {
-                propertyName = yamlResolver.yamlPath;
                 value =  getSingleValue(yamlResolver);
             }
 
-            addYamlPropertiesToProjectProperties(propertyName, value);
+            addYamlPropertiesToProjectProperties(yamlResolver.destinationKey, value);
         }
     }
 
@@ -137,7 +135,7 @@ public class InjectionMavenPlugin extends AbstractMojo{
      * @return all values from the given list as a comma separated string.
      */
     private String constructEnumFromLists(YamlResolver yamlInput){
-        if (yamlInput.key == null || yamlInput.key.isEmpty()){
+        if (yamlInput.sourceKey == null || yamlInput.sourceKey.isEmpty()){
             return constructEnumFromSimpleList(yamlInput);
         } else {
             return createEnumFromYamlValues(yamlInput);
@@ -168,7 +166,7 @@ public class InjectionMavenPlugin extends AbstractMojo{
     private String createEnumFromYamlValues(YamlResolver yamlInput) {
         try {
             YAML fullYaml = YAML.resolveLayeredConfigs(filePath);
-            List<String> valuesFromYaml = fullYaml.getMultipleFromSubYaml(yamlInput.yamlPath, yamlInput.key);
+            List<String> valuesFromYaml = fullYaml.getMultipleFromSubYaml(yamlInput.yamlPath, yamlInput.sourceKey);
             StringJoiner stringJoiner = new StringJoiner(", ");
 
             valuesFromYaml.forEach(stringJoiner::add);

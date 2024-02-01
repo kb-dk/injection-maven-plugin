@@ -47,27 +47,32 @@
             <YamlResolver>
               <yamlType>Sequence</yamlType>
               <yamlPath>origins</yamlPath>
-              <key>origin</key>
+              <sourceKey>origin</sourceKey>
+              <destinationKey>origins</destinationKey>
               <createEnum>true</createEnum>
             </YamlResolver>
             <YamlResolver>
               <yamlType>Single-value</yamlType>
               <yamlPath>testvalue.teststring</yamlPath>
+              <destinationKey>teststring</destinationKey>
             </YamlResolver>
             <YamlResolver>
               <yamlType>List</yamlType>
               <yamlPath>testlist</yamlPath>
               <createEnum>true</createEnum>
+              <destinationKey>testlist</destinationKey>
             </YamlResolver>
             <YamlResolver>
               <yamlType>Map</yamlType>
               <yamlPath>simplemap</yamlPath>
               <createEnum>true</createEnum>
+              <destinationKey>simplemap</destinationKey>
             </YamlResolver>
             <YamlResolver>
               <yamlType>List</yamlType>
               <yamlPath>allowed_origins</yamlPath>
-              <key>name</key>
+              <sourceKey>name</sourceKey>
+              <destinationKey>name</destinationKey>
               <createEnum>true</createEnum>
             </YamlResolver>
           </yamlResolvers>

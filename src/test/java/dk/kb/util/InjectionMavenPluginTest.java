@@ -111,7 +111,8 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
         yamlInput.setYamlPath("origins");
         yamlInput.setYamlType("Sequence");
         yamlInput.setCreateEnum(true);
-        yamlInput.setKey("origin");
+        yamlInput.setSourceKey("origin");
+        yamlInput.setDestinationKey("origins");
         return yamlInput;
     }
     private YamlResolver createTestList(){
@@ -120,6 +121,7 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
         yamlInput.setYamlPath("testlist");
         yamlInput.setYamlType("List");
         yamlInput.setCreateEnum(true);
+        yamlInput.setDestinationKey("testlist");
         return yamlInput;
     }
     private YamlResolver createTestSinglevalue(){
@@ -127,6 +129,7 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
         //yamlInput.setFilePath("yamlStructure.yaml");
         yamlInput.setYamlPath("testvalue.teststring");
         yamlInput.setYamlType("Single-value");
+        yamlInput.setDestinationKey("testvalue.teststring");
         return yamlInput;
     }
 
@@ -136,6 +139,7 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
         yamlInput.setYamlPath("simplemap");
         yamlInput.setYamlType("Map");
         yamlInput.setCreateEnum(true);
+        yamlInput.setDestinationKey("simplemap");
         return yamlInput;
     }
     private YamlResolver createComplexTestList(){
@@ -143,8 +147,9 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
         //yamlInput.setFilePath("yamlStructure.yaml");
         yamlInput.setYamlPath("allowed_origins");
         yamlInput.setYamlType("List");
-        yamlInput.setKey("name");
+        yamlInput.setSourceKey("name");
         yamlInput.setCreateEnum(true);
+        yamlInput.setDestinationKey("allowed_origins");
         return yamlInput;
     }
 
