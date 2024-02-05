@@ -5,6 +5,13 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <parent>
+    <groupId>org.sbforge</groupId>
+    <artifactId>sbforge-parent</artifactId>
+    <version>24</version>
+    <relativePath /><!-- override default parentpath of ../pom.xml which allows this to be a git submodule without reporting errors-->
+  </parent>
+
   <groupId>dk.kb.util</groupId>
   <artifactId>injection-maven-plugin</artifactId>
   <version>1.0.0-SNAPSHOT</version>
