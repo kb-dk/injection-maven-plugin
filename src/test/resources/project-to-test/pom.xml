@@ -32,7 +32,7 @@
       <plugin>
         <groupId>dk.kb.util</groupId>
         <artifactId>injection-maven-plugin</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.1-SNAPSHOT</version>
         <executions>
           <execution>
             <goals>
@@ -45,33 +45,26 @@
           <filePath>yamlStructure.yaml</filePath>
           <yamlResolvers>
             <YamlResolver>
-              <yamlType>Sequence</yamlType>
-              <yamlPath>origins</yamlPath>
-              <sourceKey>origin</sourceKey>
+              <yamlPath>origins[*].*.origin</yamlPath>
               <destinationKey>origins</destinationKey>
               <createEnum>true</createEnum>
             </YamlResolver>
             <YamlResolver>
-              <yamlType>Single-value</yamlType>
               <yamlPath>testvalue.teststring</yamlPath>
               <destinationKey>teststring</destinationKey>
             </YamlResolver>
             <YamlResolver>
-              <yamlType>List</yamlType>
-              <yamlPath>testlist</yamlPath>
+              <yamlPath>testlist.*</yamlPath>
               <createEnum>true</createEnum>
               <destinationKey>testlist</destinationKey>
             </YamlResolver>
             <YamlResolver>
-              <yamlType>Map</yamlType>
-              <yamlPath>simplemap</yamlPath>
+              <yamlPath>simplemap.*</yamlPath>
               <createEnum>true</createEnum>
               <destinationKey>simplemap</destinationKey>
             </YamlResolver>
             <YamlResolver>
-              <yamlType>List</yamlType>
-              <yamlPath>allowed_origins</yamlPath>
-              <sourceKey>name</sourceKey>
+              <yamlPath>allowed_origins[*].name</yamlPath>
               <destinationKey>name</destinationKey>
               <createEnum>true</createEnum>
             </YamlResolver>
