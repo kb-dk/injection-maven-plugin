@@ -18,9 +18,7 @@ package dk.kb.util;
 
 import dk.kb.util.yaml.YAML;
 import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
 
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -66,9 +64,8 @@ public class InjectionMavenPlugin extends AbstractMojo{
     /**
      * This MOJO reads specified properties from specified files.
      */
-    public void execute() throws MojoExecutionException {
+    public void execute() {
         for (YamlResolver yamlResolver : yamlResolvers) {
-            String propertyName;
             String value;
 
             if (yamlResolver.createEnum){
@@ -90,92 +87,16 @@ public class InjectionMavenPlugin extends AbstractMojo{
      */
     private String getYamlValueAsEnumFromFile(YamlResolver yamlInput) {
         try {
-            switch (yamlInput.yamlType){
-                case "Sequence":
-                    return createEnumFromYamlValues(yamlInput);
-                case "List":
-                    return constructEnumFromLists(yamlInput);
-                case "Map":
-                    return constructEnumFromMap(yamlInput);
-                case "Single-value":
-                    return getSingleValue(yamlInput);
-                default:
-                    throw new MojoFailureException("Wrong key: '" + yamlInput.yamlType + "' has been used when configuring the plugin. " +
-                            "Valid keys are: 'Sequence', 'List', 'Map' and 'Single-value'.");
-            }
-
-        } catch (MojoFailureException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Create a string from all entries in a YAML map. The strings are concatenated by ', ' and
-     * can be used as an ENUM value in an OpenAPI specification.
-     * @param yamlInput a configuration object containing information needed to extract the values from the YAML.
-     * @return all values from the given map as a comma separated string.
-     */
-    private String constructEnumFromMap(YamlResolver yamlInput) {
-        try {
             YAML fullYaml = YAML.resolveLayeredConfigs(filePath);
             StringJoiner stringJoiner = new StringJoiner(", ");
-            YAML propertiesMap = fullYaml.getSubMap(yamlInput.yamlPath);
-            propertiesMap.forEach((key, value) -> stringJoiner.add(value.toString()));
+            List<Object> properties = fullYaml.getMultiple(yamlInput.yamlPath);
+            properties.forEach(value -> stringJoiner.add((CharSequence) value));
             return stringJoiner.toString();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    /**
-     * Create a string from all entries in a YAML List. The strings are concatenated by ', ' and
-     * can be used as an ENUM value in an OpenAPI specification. It is possible to extract subelements from complex
-     * list by defining a key value in the plugin configuration.
-     * @param yamlInput a configuration object containing information needed to extract the values from the YAML.
-     * @return all values from the given list as a comma separated string.
-     */
-    private String constructEnumFromLists(YamlResolver yamlInput){
-        if (yamlInput.sourceKey == null || yamlInput.sourceKey.isEmpty()){
-            return constructEnumFromSimpleList(yamlInput);
-        } else {
-            return createEnumFromYamlValues(yamlInput);
-        }
-    }
-
-    /**
-     * Create a string from all entries in a  simple YAML List. The strings are concatenated by ', ' and
-     * can be used as an ENUM value in an OpenAPI specification.
-     * @param yamlInput a configuration object containing information needed to extract the values from the YAML.
-     * @return all values from the given list as a comma separated string.
-     */
-    private String constructEnumFromSimpleList(YamlResolver yamlInput) {
-        try {
-            YAML fullYaml = YAML.resolveLayeredConfigs(filePath);
-            StringJoiner stringJoiner = new StringJoiner(", ");
-
-            fullYaml.getList(yamlInput.yamlPath)
-                    .forEach(string -> stringJoiner.add((CharSequence) string));
-
-            return stringJoiner.toString();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-
-    private String createEnumFromYamlValues(YamlResolver yamlInput) {
-        try {
-            YAML fullYaml = YAML.resolveLayeredConfigs(filePath);
-            List<String> valuesFromYaml = fullYaml.getMultipleFromSubYaml(yamlInput.yamlPath, yamlInput.sourceKey);
-            StringJoiner stringJoiner = new StringJoiner(", ");
-
-            valuesFromYaml.forEach(stringJoiner::add);
-
-            return stringJoiner.toString();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     /**
      * Extract a single value from a given YAML configuration.
@@ -185,7 +106,7 @@ public class InjectionMavenPlugin extends AbstractMojo{
     private String getSingleValue(YamlResolver yamlInput) {
         try {
             YAML fullYaml = YAML.resolveLayeredConfigs(filePath);
-            return fullYaml.getString(yamlInput.yamlPath);
+            return (String) fullYaml.get(yamlInput.yamlPath);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

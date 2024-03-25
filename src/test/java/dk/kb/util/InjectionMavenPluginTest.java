@@ -25,7 +25,7 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
         assertTrue( pom.exists() );
 
         InjectionMavenPlugin myMojo = (InjectionMavenPlugin) lookupMojo( "read-yaml-properties", pom );
-        assertEquals("Sequence",  myMojo.yamlResolvers.get(0).yamlType );
+        assertEquals("origins[*].*.origin",  myMojo.yamlResolvers.get(0).getYamlPath() );
 
     }
 
@@ -40,7 +40,7 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
     }
 
     @Test
-    public void testEnumFromSequence() throws Exception {
+    public void testEnumFromSequence() {
         YamlResolver testSequence = createTestSequence();
         InjectionMavenPlugin yamlMojo = setupTestProject(testSequence);
         // Execute plugin
@@ -49,7 +49,7 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
                     yamlMojo.project.getProperties().getProperty("origins"));
     }
     @Test
-    public void testEnumFromList() throws Exception {
+    public void testEnumFromList() {
         YamlResolver testList = createTestList();
         InjectionMavenPlugin yamlMojo = setupTestProject(testList);
         // Execute plugin
@@ -58,7 +58,7 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
                     yamlMojo.project.getProperties().getProperty("testlist"));
     }
     @Test
-    public void testEnumFromMap() throws Exception {
+    public void testEnumFromMap() {
         YamlResolver testMap = createTestMap();
         InjectionMavenPlugin yamlMojo = setupTestProject(testMap);
         // Execute plugin
@@ -68,7 +68,7 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
     }
 
     @Test
-    public void testSingleValue() throws Exception {
+    public void testSingleValue() {
         YamlResolver testValue = createTestSinglevalue();
         InjectionMavenPlugin yamlMojo = setupTestProject(testValue);
         // Execute plugin
@@ -78,7 +78,7 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
     }
 
     @Test
-    public void testComplexList() throws Exception {
+    public void testComplexList() {
         YamlResolver testList = createComplexTestList();
         InjectionMavenPlugin yamlMojo = setupTestProject(testList);
         // Execute plugin
@@ -107,47 +107,35 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
 
     private YamlResolver createTestSequence(){
         YamlResolver yamlInput = new YamlResolver();
-        //yamlInput.setFilePath("yamlStructure.yaml");
-        yamlInput.setYamlPath("origins");
-        yamlInput.setYamlType("Sequence");
+        yamlInput.setYamlPath("origins[*].*.origin");
         yamlInput.setCreateEnum(true);
-        yamlInput.setSourceKey("origin");
         yamlInput.setDestinationKey("origins");
         return yamlInput;
     }
     private YamlResolver createTestList(){
         YamlResolver yamlInput = new YamlResolver();
-        //yamlInput.setFilePath("yamlStructure.yaml");
-        yamlInput.setYamlPath("testlist");
-        yamlInput.setYamlType("List");
+        yamlInput.setYamlPath("testlist.*");
         yamlInput.setCreateEnum(true);
         yamlInput.setDestinationKey("testlist");
         return yamlInput;
     }
     private YamlResolver createTestSinglevalue(){
         YamlResolver yamlInput = new YamlResolver();
-        //yamlInput.setFilePath("yamlStructure.yaml");
         yamlInput.setYamlPath("testvalue.teststring");
-        yamlInput.setYamlType("Single-value");
         yamlInput.setDestinationKey("testvalue.teststring");
         return yamlInput;
     }
 
     private YamlResolver createTestMap(){
         YamlResolver yamlInput = new YamlResolver();
-        //yamlInput.setFilePath("yamlStructure.yaml");
-        yamlInput.setYamlPath("simplemap");
-        yamlInput.setYamlType("Map");
+        yamlInput.setYamlPath("simplemap.*");
         yamlInput.setCreateEnum(true);
         yamlInput.setDestinationKey("simplemap");
         return yamlInput;
     }
     private YamlResolver createComplexTestList(){
         YamlResolver yamlInput = new YamlResolver();
-        //yamlInput.setFilePath("yamlStructure.yaml");
-        yamlInput.setYamlPath("allowed_origins");
-        yamlInput.setYamlType("List");
-        yamlInput.setSourceKey("name");
+        yamlInput.setYamlPath("allowed_origins[*].name");
         yamlInput.setCreateEnum(true);
         yamlInput.setDestinationKey("allowed_origins");
         return yamlInput;
