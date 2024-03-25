@@ -5,11 +5,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 public class YamlResolver {
 
     /**
-     * The type of YAML object to fetch from the file. Currently, supports: List, Sequence, Map and Single-value.
-     */
-    String yamlType;
-
-    /**
      * This field should contain the YAML path to the given entry, which we want to extract from the YAML.
      * Path elements are separated by {@code .} and can be either:
      * <ul>
@@ -22,12 +17,6 @@ public class YamlResolver {
      * Note: Dots {@code .} in YAML keys can be escaped with quotes: {@code foo.'a.b.c' -> [foo, a.b.c]}.
      */
     String yamlPath;
-
-    /**
-     * If yamlType is Map or List, then this field should contain the key or entry-number to look for in the given map.
-     */
-    @Parameter(defaultValue = "")
-    String sourceKey;
 
     /**
      * The plugin requires a destination key for yeah resolver. This key determines the key for the property, when
@@ -51,28 +40,12 @@ public class YamlResolver {
         this.createEnum = createEnum;
     }
 
-    public String getYamlType() {
-        return yamlType;
-    }
-
-    public void setYamlType(String yamlType) {
-        this.yamlType = yamlType;
-    }
-
     public String getYamlPath() {
         return yamlPath;
     }
 
     public void setYamlPath(String yamlPath) {
         this.yamlPath = yamlPath;
-    }
-
-    public String getSourceKey() {
-        return sourceKey;
-    }
-
-    public void setSourceKey(String sourceKey) {
-        this.sourceKey = sourceKey;
     }
 
     public String getDestinationKey() {
