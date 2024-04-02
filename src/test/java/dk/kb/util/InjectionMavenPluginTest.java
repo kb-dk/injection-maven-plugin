@@ -7,6 +7,7 @@ import org.apache.maven.project.MavenProject;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
     }
 
     @Test
-    public void testEnumFromSequence() {
+    public void testEnumFromSequence() throws IOException {
         YamlResolver testSequence = createTestSequence();
         InjectionMavenPlugin yamlMojo = setupTestProject(testSequence);
         // Execute plugin
@@ -49,7 +50,7 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
                     yamlMojo.project.getProperties().getProperty("origins"));
     }
     @Test
-    public void testEnumFromList() {
+    public void testEnumFromList() throws IOException {
         YamlResolver testList = createTestList();
         InjectionMavenPlugin yamlMojo = setupTestProject(testList);
         // Execute plugin
@@ -58,7 +59,7 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
                     yamlMojo.project.getProperties().getProperty("testlist"));
     }
     @Test
-    public void testEnumFromMap() {
+    public void testEnumFromMap() throws IOException {
         YamlResolver testMap = createTestMap();
         InjectionMavenPlugin yamlMojo = setupTestProject(testMap);
         // Execute plugin
@@ -68,7 +69,7 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
     }
 
     @Test
-    public void testSingleValue() {
+    public void testSingleValue() throws IOException {
         YamlResolver testValue = createTestSinglevalue();
         InjectionMavenPlugin yamlMojo = setupTestProject(testValue);
         // Execute plugin
@@ -78,7 +79,7 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
     }
 
     @Test
-    public void testComplexList() {
+    public void testComplexList() throws IOException {
         YamlResolver testList = createComplexTestList();
         InjectionMavenPlugin yamlMojo = setupTestProject(testList);
         // Execute plugin
@@ -89,7 +90,7 @@ public class InjectionMavenPluginTest extends AbstractMojoTestCase {
 
 
     /* METHODS USED TO SETUP TESTS AND ASSERT ON PROJECT PROPERTIES. */
-    private InjectionMavenPlugin setupTestProject(YamlResolver yamlInput) {
+    private InjectionMavenPlugin setupTestProject(YamlResolver yamlInput) throws IOException {
         List<YamlResolver> yamlResolverList = new ArrayList<>();
         yamlResolverList.add(yamlInput);
 

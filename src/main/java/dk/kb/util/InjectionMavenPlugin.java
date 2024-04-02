@@ -16,6 +16,7 @@ package dk.kb.util;
  * limitations under the License.
  */
 
+import dk.kb.util.string.Strings;
 import dk.kb.util.yaml.YAML;
 import org.apache.maven.plugin.AbstractMojo;
 
@@ -57,9 +58,12 @@ public class InjectionMavenPlugin extends AbstractMojo{
         this.project = project;
     }
 
-    public void setFilePath(String filePath) {
+    public void setFilePath(String filePath) throws IOException {
         this.filePath = filePath;
+        cachedYAML = YAML.resolveLayeredConfigs(filePath);
     }
+
+    private YAML cachedYAML;
 
     /**
      * This MOJO reads specified properties from specified files.
@@ -86,15 +90,7 @@ public class InjectionMavenPlugin extends AbstractMojo{
      *          value is retrieved.
      */
     private String getYamlValueAsEnumFromFile(YamlResolver yamlInput) {
-        try {
-            YAML fullYaml = YAML.resolveLayeredConfigs(filePath);
-            StringJoiner stringJoiner = new StringJoiner(", ");
-            List<Object> properties = fullYaml.getMultiple(yamlInput.yamlPath);
-            properties.forEach(value -> stringJoiner.add((CharSequence) value));
-            return stringJoiner.toString();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return Strings.join(cachedYAML.getMultiple(yamlInput.yamlPath));
     }
 
 
@@ -104,12 +100,7 @@ public class InjectionMavenPlugin extends AbstractMojo{
      * @return the value from the specified path.
      */
     private String getSingleValue(YamlResolver yamlInput) {
-        try {
-            YAML fullYaml = YAML.resolveLayeredConfigs(filePath);
-            return (String) fullYaml.get(yamlInput.yamlPath);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return cachedYAML.getString(yamlInput.yamlPath);
     }
 
     /**
