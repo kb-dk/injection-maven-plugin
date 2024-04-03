@@ -7,10 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0](https://github.com/kb-dk/injection-maven-plugin/releases/tag/injection-maven-plugin-1.1.0)
 ### Changed
 - Updated the YAML dependency, which makes all look-ups doable. However, this also changes how the plugin is configured.
 
-## [1.0.0](https://github.com/kb-dk/injection-maven-plugin/tree/injection-maven-plugin-1.0.0)
+## [1.0.0](https://github.com/kb-dk/injection-maven-plugin/releases/tag/injection-maven-plugin-1.0.0)
 ### Added
 - Ability to define YAML properties to extract from plugin configuration in POMs.
 - YAML extraction code. 
