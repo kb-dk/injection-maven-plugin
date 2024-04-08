@@ -1,4 +1,7 @@
 # Injection Maven Plugin by the Royal Danish Library.
+
+DEPRECATED: This plugin is not needed by the DS-services anymore, as injections from config are handled dynamically. 
+
 This maven plugin provides the capability of injecting properties from configuration files written in YAML into internal
 maven properties. 
 
